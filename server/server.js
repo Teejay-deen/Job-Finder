@@ -1,6 +1,9 @@
 import express from 'express'
 import { auth } from 'express-openid-connect';
 import dotenv from 'dotenv'
+import cookieParser from "cookie-parser"
+import cors from "cors"
+
 dotenv.config()
 
 const app = express()
@@ -16,12 +19,15 @@ const config = {
     issuerBaseURL: process.env.ISSUER_BASE_URL
 };
 
-// auth router attaches /login, /logout, and     /callback routes to the baseURL
-app.use(auth(config));
+//using the midlware
 
-// req.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-    res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}))
 
-app.listen(port, () => console.log(`server listening on port ${port}!`))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
+
+app.use(auth(config))
