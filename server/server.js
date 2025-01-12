@@ -31,3 +31,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.use(auth(config))
+
+const server = async() => {
+    try {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is runing on a port ${process.env.PORT}`);
+
+        })
+    } catch (error) {
+        console.log("Server error", error.message);
+        process.exit(1)
+    }
+}
+
+server()
